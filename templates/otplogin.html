@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+ {% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'assets/css1/login.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+
+</head>
+<body>
+    <div class="container  ">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="m-5">
+
+            </div>
+            <div class="col-12 mt-5 col-md-8 col-lg-6 col-xl-8 ">
+                <!-- box div starts here -->
+                <div class="card  divcolor " style="border-radius: 1rem; width :100%;"> 
+                    <div class="card-body p-5 text-center">
+                        <form action="verifylogin" method="post">
+                            {% csrf_token %}
+                        <div class="mb-md-3 mt-md-4 ">
+                            
+                            <h2 class="fw-bold mb-2 text-uppercase logintext">Enter OTP</h2>
+                            <!-- <p class="divtext mb-5">Please enter your Name and password!</p> -->
+                            
+                            
+                            <div class="row mb-5">
+                                <div class="col-3"></div>
+                                <div class="col-6 d-flex flex-row mt-5 justify-content-around">
+                                    <input type="text" maxlength="1" id="inp1" name="first" class="form-control inp" oninput="fn(this,'inp2')" />
+                                    <input type="text" maxlength="1" id="inp2" name="second" class="form-control inp" oninput="fn(this,'inp3')"/>
+                                    <input type="text" maxlength="1" id="inp3" name="third" class="form-control inp" oninput="fn(this,'inp4')"/>
+                                    <input type="text" maxlength="1" id="inp4" name="fourth" class="form-control inp" oninput="fn(this,'inp4')"/>
+                                </div>
+                            </div>  
+                            
+              
+                          
+                            <button class="btn btn-primary btn-lg px-5" style="background-color: #401BD6; font-weight:bold" type="submit">Verify</button>
+
+                            <div class="row">
+                                <div class="col-6">
+
+                                </div>
+                                <div class="col-4 mt-3">
+                                    <p class="mb-0"> <a href="{% url 'signed_up' %}" class="text-black-50 hovers" style="text-decoration: None;">(Resend OTP)</a>
+                                    </p>
+                                </div>
+                            </div>
+                            {% for message in messages %}
+                            <h3 class="text-center text-danger pt-2">{{message}}</h3>
+                            {% endfor %}
+                          </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    function fn(thiss,too){
+        var len=thiss.value.length;
+        if (len==1){
+            document.getElementById(too).focus();
+
+        }
+    }
+</script>
+</html>

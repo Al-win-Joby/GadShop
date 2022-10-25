@@ -1,0 +1,8 @@
+<select onchange="getsubcatname()" id="select2" name="subcategoryselected" class="form-select mb-3" >
+    <option selected="True" >Select Subcategory</option>
+    {% for i in subcat %}
+    <option  value={{i.id}}>{{i.subcategory_name}}</option>
+    
+<!-- <option  value={{subcategory.category_name.id}}>{{subcategory.subcategory_name}}</option>  -->
+    {% endfor %}
+</select>

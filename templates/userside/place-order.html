@@ -1,0 +1,521 @@
+
+{% extends 'userside/homebase1.html' %}
+{% load static %}
+{% block content%}
+
+
+
+
+</header> <!-- section-header.// -->
+<section class="section-content padding-y bg">
+<div class="container">
+
+
+
+<!-- ============================ COMPONENT 2 ================================= -->
+<div class="row">
+		<main class="col-md-8">
+
+<article class="card mb-4">
+	
+<div class="card-body">
+	<h4 class="card-title mb-4">Review cart</h4>
+	
+	<div class="row">
+		{% for item in allcart %}
+		
+		<div class="col-md-6">
+			<a href="{{item.product_id.geturl}}">
+			<figure class="itemside  mb-4">
+				<div class="aside"><img src="{{item.product_id.images.url}}" class="border img-sm"></div>
+				<figcaption class="info">
+					<p>{{item.product_id.product_name}} </p>
+					<span class="text-muted">{{item.totalquantity}}x = ₹ {{item.gettotprice}}</span>
+				</figcaption>
+			</figure>
+		</a>	
+		</div> <!-- col.// -->	
+		
+		{% endfor %} 
+	</div> <!-- row.// -->
+	
+</div> <!-- card-body.// -->
+
+</article> <!-- card.// -->
+
+
+
+
+
+<article class="card mb-4" >
+<div class="card-body">
+	<h4 class="card-title mb-4">Add Delivery address</h4>
+	<form action="{% url 'myprofile' %}">
+		{% csrf_token %} 
+		<div class="row">
+				
+				<div class="form-group col-sm-4 mb-0 pb-0">
+				<button class="btn btn-primary mb-0" type="submit"> ADD ADDRESS </button>
+			</div>
+		</div> <!-- row.// -->	
+	</form>
+	
+</div> <!-- card-body.// -->
+
+{%for eachaddressofuser in alladdressofuser%}
+<hr class="m-0">
+<header class="card-header">
+
+	
+	<label class="form-check collapsed" data-toggle="collapse" data-target="#{{eachaddressofuser.housename}}">
+		<input onclick="addresschecker('{{eachaddressofuser.housename}}')" class="form-check-input llll" id="addressoption" value="{{eachaddressofuser.housename}}"                                                                                                    name="address-option"  type="radio" value="{{eachaddressofuser.housename}}">
+		<h6 class="form-check-label"> 
+			{{eachaddressofuser.housename}}
+		</h6>
+	</label>
+</header>
+<div id="{{eachaddressofuser.housename}}" class="collapse " >
+	<div class="card-body">
+
+		<p class=" text-muted">{{eachaddressofuser.housename}},{{eachaddressofuser.building_number}},{{eachaddressofuser.street}}, </p>
+		<p class=" text-muted">{{eachaddressofuser.pincode}},</p>
+		<p class=" text-muted">{{eachaddressofuser.state}},{{eachaddressofuser.country}}</p>
+		
+	</div> <!-- card body .// -->
+</div> <!-- collapse .// -->
+
+{% endfor %}
+</article> <!-- card.// -->
+
+
+<article class="accordion" id="accordion_pay">
+	<!-- razorpay start -->
+
+
+	<div class="card">
+		<header class="card-header">
+			<img src="{% static 'assets/images/misc/razorpay.png' %}" class="float-right mt-1" height="24"> 
+			<label class="form-check collapsed" data-toggle="collapse" data-target="#pay_paynet1">
+				<input id="razorpay" class="form-check-input" name="payment-option"  type="radio" value="option2">
+				<h6 class="form-check-label" style="display: inline;"> 
+					Razorpay </h6> 
+				
+			</label>
+		</header>
+		<div id="pay_paynet1" class="collapse " data-parent="#accordion_pay">
+		<div class="card-body">
+			<p class="text-center text-muted">You'll be redirected to Razorpay to add your billing information.</p>
+			<p class="text-center">
+				<a href="#"><img src="{% static 'assets/images/misc/razorpay.png' %}" height="32"></a>
+				<br><br>
+			</p>
+		</div> <!-- card body .// -->
+		</div> <!-- collapse .// -->
+	</div> <!-- card.// -->
+
+
+	<!-- razorpay end -->
+
+	<div class="card">
+		<header class="card-header">
+			<img src="{% static 'assets/images/misc/payment-paypal.png' %}" class="float-right" height="24"> 
+			<label class="form-check collapsed" data-toggle="collapse" data-target="#pay_paynet">
+				<input class="form-check-input" id="paypalradio" name="payment-option"  type="radio" value="option2">
+				<h6 class="form-check-label" style="display: inline;"> 
+					Paypal </h6> 
+				
+			</label>
+		</header>
+		<div id="pay_paynet" class="collapse " data-parent="#accordion_pay">
+		<div class="card-body">
+			<p class="text-center text-muted">Connect your PayPal account and use it to pay your bills. You'll be redirected to PayPal to add your billing information.</p>
+			<p class="text-center">
+				<a href="#"><img src="{% static 'assets/images/misc/btn-paypal.png' %}" height="32"></a>
+				<br><br>
+			</p>
+		</div> <!-- card body .// -->
+		</div> <!-- collapse .// -->
+	</div> <!-- card.// -->
+	<div class="card">
+	<header class="card-header">
+		<img src="{% static 'assets/images/misc/cashondelivery.png' %}" class="float-right" height="24">  
+		<label class="form-check" data-toggle="collapse" data-target="#pay_payme">
+			<input class="form-check-input" id="cashondelvery" name="payment-option" type="radio" value="">
+			<h6 class="form-check-label"> Cash on Delivery  </h6>
+		</label>
+	</header>
+	
+	</div> <!-- card.// -->
+	
+</article> 
+<!-- accordion end.// -->
+  
+		</main> <!-- col.// -->
+		<aside class="col-md-4">
+			<div class="card">
+		<div class="card-body">
+			<dl class="dlist-align">
+				
+			  <dt>Total price:</dt>
+			  <dd class="text-right">₹ {{totalamount2}}</dd>
+			</dl>
+			<dl class="dlist-align">
+			  <dt>Tax:</dt>
+			  <dd class="text-right">₹ {{tax}}</dd>
+			</dl>
+			<dl class="dlist-align">
+			  <dt>Total:</dt>
+			  <dd  class="text-right text-dark b"><strong id="finalamount">₹ {{finalamount}}</strong></dd>
+			  <input type="hidden" name="" id="xyz" value={{finalamount}}>
+			</dl>
+			<hr>
+			<p class="text-center mb-3">
+				<img src="{% static 'assets/images/misc/payments.png' %}" height="26">
+			</p>
+			
+				{% csrf_token %} 
+			<button id="placeorder" disabled class="btn btn-primary btn-block" onclick="placeorder()"> Place Order </button>
+			
+			<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog" role="document">
+				  <div class="modal-content">
+					<div class="modal-header">
+					  <h5 class="modal-title" id="exampleModalLabel">Confirm Order</h5>
+					  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					  </button>
+					</div>
+					<div class="modal-body">
+					  Are you sure you want to place your Order
+					</div>
+					<div class="modal-footer">
+						<form method="post" class="formclass">
+						<div id="razorandCOD">
+					  		<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					  		<button type="submit" id="confirmbtn" data-dismiss="modal" class="btn btn-success">Confirm</button>
+						</div>
+					 
+				{% comment %} paypal {% endcomment %}
+					 
+					<div id="paypals" >
+					  <!-- Replace "test" with your own sandbox Business account app client ID -->
+						<script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+						<!-- Set up a container element for the button -->
+						<div class="mx-auto" id="paypal-button-container"></div>
+						<script>
+							
+						paypal.Buttons({
+							// Sets up the transaction when a payment button is clicked
+							createOrder: (data, actions) => {
+							return actions.order.create({
+								purchase_units: [{
+								amount: {
+									value: '1' // Can also reference a variable or function
+								}
+								}]
+							});
+							},
+							// Finalize the transaction after payer approval
+							onApprove: (data, actions) => {
+							return actions.order.capture().then(function(orderData) {
+								// Successful capture! For dev/demo purposes:
+								console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+								const transaction = orderData.purchase_units[0].payments.captures[0];
+								swal("Order status!", "Your product will be delivered within a week to "+ housename, "success").then(function(){
+				
+									var token      = $('input[name=csrfmiddlewaretoken]').val();
+									$.ajax({
+										method:'POST',
+										url:"placedorder",
+						
+										data:{
+											addressx:housename,
+											csrfmiddlewaretoken: '{{ csrf_token }}',
+										},
+										
+										success:function(response){
+											
+											if (response.status){
+												console.log("succcerss")
+												window.location.href="home"
+												document.getElementById('quantityvalue').value=totquantity
+											}
+										}
+									})
+								});
+								// When ready to go live, remove the alert and show a success message within this page. For example:
+								// const element = document.getElementById('paypal-button-container');
+								// element.innerHTML = '<h3>Thank you for your payment!</h3>';
+								// Or go to another URL:  actions.redirect('thank_you.html');
+							});
+							}
+						}).render('#paypal-button-container');
+						</script>
+					</div>
+
+				{% comment %} paypal ends {% endcomment %}
+
+						</form>
+					</div>
+				  </div>
+				</div>
+			  </div>
+		</div> <!-- card-body.// -->
+		</div> <!-- card.// -->
+		</aside> <!-- col.// -->
+	</div> <!-- row.// -->
+
+<!-- ============================ COMPONENT 2 END//  ================================= -->
+
+
+
+
+</div> <!-- container .//  -->
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+<!-- ========================= RAZORPAY ========================= -->
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+
+	function placeorder(){
+		if (document.getElementById('paypalradio').checked==true)
+		{
+			
+			document.getElementById('razorandCOD').hidden=true
+			document.getElementById('paypal-button-container').hidden=false
+		}
+		else{
+			
+			document.getElementById('paypal-button-container').hidden=true
+			document.getElementById('razorandCOD').hidden=false
+			
+		}
+		$('#exampleModal').modal('toggle');
+		
+	}
+
+	c=document.getElementById('xyz').value
+	console.log(c)
+	c=c*100
+	
+var options = {
+    "key": "rzp_test_ju3EIJ0EQ97kW8", // Enter the Key ID generated from the Dashboard
+    "amount": c, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "Acme Corp",
+    "description": "Test Transaction",
+    "image": "https://example.com/your_logo",
+    
+    "handler": function (response){
+        //alert(response.razorpay_payment_id);
+       //alert(response.razorpay_order_id);
+        //alert(response.razorpay_signature)
+		orderconfirmed(document.getElementsByClassName('llll').value);
+    },
+    "prefill": {
+        "name": "{{request.user.username}}",
+        "email": "{{request.user.email}}",
+        "contact": "{{request.user.phone_number}}"
+    },
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+
+
+
+var rzp1 = new Razorpay(options);
+var token     = $('input[name=csrfmiddlewaretoken]').val();
+rzp1.on('payment.failed', function (response){
+        alert(response.error.code);
+        alert(response.error.description);
+        alert(response.error.source);
+        alert(response.error.step);
+        alert(response.error.reason);
+        alert(response.error.metadata.order_id);
+        alert(response.error.metadata.payment_id);
+});
+
+
+document.getElementById('confirmbtn').onclick = function(e){
+	if (document.getElementById('razorpay').checked==true)
+	{
+    rzp1.open();
+    e.preventDefault();
+	$.ajax({
+		method:'POST',
+		url:'/payment/razorpay',
+		data:{
+			
+			csrfmiddlewaretoken:token
+		},
+		
+		success:function(response){
+			console.log("success")
+			if (response.status){
+						
+			}
+		}
+	}) 
+	}
+	else if(document.getElementById('cashondelvery').checked==true){
+			
+		console.log("yep")
+		console.log(housename)
+		swal("Order status!", "Your product will be delivered within a week to "+ housename, "success").then(function(){
+			
+			var token      = $('input[name=csrfmiddlewaretoken]').val();
+			$.ajax({
+				method:'POST',
+				url:"placedorder",
+
+				data:{
+					addressx:housename,
+					csrfmiddlewaretoken: '{{ csrf_token }}',
+				},
+				
+				success:function(response){
+					
+					if (response.status){
+						console.log("succcerss")
+						window.location.href="home"
+						document.getElementById('quantityvalue').value=totquantity
+					}
+				}
+			})
+		});
+	}
+	else{
+		swal({
+			title: "Payment Method?",
+			text: "Please select a payment option",
+			icon: "warning",
+			
+			dangerMode: true,
+		  })
+	}
+	
+}
+</script>
+
+<!-- ========================= RAZORPAY END ========================= -->
+
+
+
+
+
+<script>
+	var housename
+	function addresschecker(housenm){
+		housename=housenm
+		console.log("addresclicked")
+		document.getElementById('placeorder').removeAttribute('disabled');
+	}
+
+	 function orderconfirmed(t){
+		console.log(t)
+		console.log("orderconfirmed worked")
+		if(document.getElementById('cashondelvery').checked==true){
+			
+			console.log("yep")
+			console.log(housename)
+			swal("Order status!", "Your product will be delivered within a week to "+ housename, "success").then(function(){
+				
+				var token      = $('input[name=csrfmiddlewaretoken]').val();
+				$.ajax({
+					method:'POST',
+					url:"placedorder",
+	
+					data:{
+						addressx:housename,
+						csrfmiddlewaretoken: '{{ csrf_token }}',
+					},
+					
+					success:function(response){
+						
+						if (response.status){
+							console.log("succcerss")
+							window.location.href="home"
+							document.getElementById('quantityvalue').value=totquantity
+						}
+					}
+				})
+			});
+		}
+		else if(document.getElementById('razorpay').checked==true)
+		{ 
+			console.log("raz worked")
+			rzp1.open();
+			//e.preventDefault();
+			$.ajax({
+				method:'POST',
+				url:'/payment/razorpay',
+				data:{
+					
+					csrfmiddlewaretoken:token
+				},
+				
+				success:function(response){
+					
+					if (response.status){
+						
+						swal("Order status!", "Your product will be delivered within a week to "+ housename, "success").then(function(){
+				
+							var token      = $('input[name=csrfmiddlewaretoken]').val();
+							$.ajax({
+								method:'POST',
+								url:"placedorder",
+				
+								data:{
+									addressx:housename,
+									csrfmiddlewaretoken: '{{ csrf_token }}',
+								},
+								
+								success:function(response){
+									
+									if (response.status){
+										console.log("succcerss")
+										window.location.href="home"
+										document.getElementById('quantityvalue').value=totquantity
+									}
+								}
+							})
+						});
+						
+					}
+					else{
+						console.log('fail')
+					}
+				}
+			}) 
+			}
+
+
+
+		else{
+			console.log("sssssss")
+			swal({
+				title: "Payment Method?",
+				text: "Please select a payment option",
+				icon: "warning",
+				
+				dangerMode: true,
+			  })
+		}
+	}
+
+	
+
+ </script>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+</body>
+</html>
+{% endblock %}

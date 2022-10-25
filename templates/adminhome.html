@@ -1,0 +1,63 @@
+
+{% extends 'adminhomebase.html' %}
+           
+{%block content%}
+            <!-- Recent Sales Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="bg-secondary text-center rounded p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h6 class="mb-0">User Details</h6>
+                        <a href="{% url 'createadminuser' %}">Create Admin</a>
+                        <a href="">Show All</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table text-start align-middle table-bordered table-hover mb-0">
+                            <thead>
+                                <tr class="text-white">
+                                    
+                                    <th scope="col">First name</th>
+                                    <th scope="col">Username</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Last Login</th>
+                                    <th scope="col">Admin</th>
+                                    <th scope="col">Active</th>
+                                    <th scope="col">Action</th>
+                                    {% comment %} <th scope="col">Delete</th> {% endcomment %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in key1 %}
+                                <tr>
+                                    
+                                    <td>{{i.first_name}}</td>
+                                    <td>{{i.username}}</td>
+                                    <td>{{i.email}}</td>
+                                    <td>{{i.last_login}}</td>
+                                    <td>{{i.is_admin}}</td>
+                                    <td>{{i.is_staff}}</td>
+                                    <form action="{% url 'edit' pk=i.id %}" method="post">
+                                    {% csrf_token %}
+                                    {% if i.is_staff is True %}
+                                    <td><button class="btn btn-sm btn-warning" type="submit">Block</button></td>
+                                    </form>
+                                    <form action="{% url 'edit' pk=i.id %}"  method="post">
+                                    {% csrf_token %}
+                                    {% else %}
+                                    <td><button class="btn btn-sm btn-success" type="submit">Unblock</button></td>
+                                    {% endif %}
+                                    </form>
+                                    
+
+                                    {% comment %} <form action="{% url 'delete' pk=i.id %}"  method="post">
+                                    {% csrf_token %}
+                                    <td><button class="btn btn-sm btn-primary" onclick=checker()>Delete</button></td>
+                                    </form> {% endcomment %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+{% endblock %}            <!-- Recent Sales End -->

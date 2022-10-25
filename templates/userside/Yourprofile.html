@@ -1,0 +1,107 @@
+
+{% extends 'userside/homebase1.html' %}
+{% load static %}
+{% block content%}
+
+<!-- ========================= SECTION CONTENT END// ========================= -->
+<div class="row mt-5 pt-3" >
+	<div class="col-sm-1 col-md-1">
+
+	</div>
+	<div class="col-xs-12 col-sm-6 col-md-4">
+	<article class="card mb-4">
+		<div class="card-body">
+			<h4 class="card-title mb-4">Your Profile</h4>
+			<form action="">
+				<div class="row">
+					<div class="form-group col-sm-12">
+						<label>Frst name &nbsp;: <span style="text-transform:uppercase;font-weight:bolder" >{{user.first_name}}</span></label>
+						
+					</div>
+					<div class="form-group col-sm-12">
+						<label>Last name &nbsp;: <span style="text-transform:uppercase;font-weight:bolder" >{{user.last_name}}</span></label>
+						
+					</div>
+					<div class="form-group col-sm-12">
+						<label>Phone  &emsp; &ensp;  : <span style="text-transform:uppercase;font-weight:bolder" >{{user.phone_number}}</span></label>
+						
+					</div>
+					<div class="form-group col-sm-12">
+						<label>Email  &emsp;  &emsp; : <span style="font-weight:bolder" >   {{user.email}}</span></label>
+						
+					</div>
+				</div> <!-- row.// -->	
+			</form>
+		</div> <!-- card-body.// -->
+		</article> <!-- card.// -->
+		</div>
+		<div class="col-sm-1 col-md-1">
+
+		</div>
+		<div class="col-xs-12 col-sm-6 col-md-4">
+			<article class="card mb-4" >
+				<div class="card-body">
+					<h4 class="card-title mb-4">Add address</h4>
+					<form action="addaddress" method="post">
+						{% csrf_token %} 
+						<div class="row">
+								<div class="form-group col-sm-6">
+									<label>Country</label>
+									<input name="country" type="text" placeholder="Type here" required pattern="[A-Za-z]{1,}{1,16}" class="form-control">
+								</div>
+								<div class="form-group col-sm-6">
+									<label>State</label>
+									<input name="state" type="text" placeholder="Type here" required minlength="3" pattern="[A-Za-z]{1,}{1,16}" class="form-control">
+								</div>
+								<div class="form-group col-sm-8">
+									<label>Street</label>
+									<input name="street" type="text" placeholder="Type here" required minlength="3" pattern="[A-Za-z]{1,}{1,16}" class="form-control">
+								</div>
+								<div class="form-group col-sm-4">
+									<label>Building number</label>
+									<input name="building_number" type="text" placeholder=""  class="form-control">
+								</div>
+								<div class="form-group col-sm-8">
+									<label>House Name</label>
+									<input name="house_name" type="text" placeholder="Type here" required pattern="[A-Za-z]{1,}{1,16}" class="form-control">
+								</div>
+								<div class="form-group col-sm-4">
+									<label>Pincode</label>
+									<input name="pincode" type="text" placeholder="" required  pattern="[A-Za-z]{1,}{1,16}" class="form-control">
+								</div>
+								<div class="form-group col-sm-4 mb-0 pb-0">
+								<button class="btn btn-primary mb-0" type="submit"> ADD ADDRESS </button>
+								</div>
+						</div> <!-- row.// -->	
+					</form>
+					
+				</div> <!-- card-body.// -->
+				
+				{%for eachaddressofuser in alladdressofuser%} 
+				<hr class="m-0">
+				<header class="card-header">
+				
+					
+					<label class="form-check collapsed" data-toggle="collapse" data-target="#{{eachaddressofuser.housename}}">
+						<input onclick="addresschecker()" class="form-check-input" id="addressoption"                                                                                                      name="address-option"  type="radio" value="{{eachaddressofuser.housename}}">
+						<h6 class="form-check-label"> 
+							{{eachaddressofuser.housename}}
+						</h6>
+					</label>
+				</header>
+				<div id="{{eachaddressofuser.housename}}" class="collapse " >
+					<div class="card-body">
+				
+						<p class=" text-muted">{{eachaddressofuser.housename}},{{eachaddressofuser.building_number}},{{eachaddressofuser.street}}, </p>
+						<p class=" text-muted">{{eachaddressofuser.pincode}},</p>
+						<p class=" text-muted">{{eachaddressofuser.state}},{{eachaddressofuser.country}}</p>
+						
+					</div> <!-- card body .// -->
+				</div> <!-- collapse .// -->
+				
+				{% endfor %}
+				</article> <!-- card.// -->
+		</div>
+
+</div>
+{%endblock%}

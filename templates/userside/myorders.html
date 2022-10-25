@@ -1,0 +1,83 @@
+
+{% extends 'userside/homebase1.html' %}
+{% load static %}
+{% block content%}
+
+<section class="section-content padding-y bg">
+<div class="container">
+
+<!-- ============================ COMPONENT 1 ================================= -->
+<h3>My Orders</h3>
+</div>
+</section> 
+<section class="section-content padding-y">
+<div class="container">
+<div class="row">
+	<aside class="col-md-3">
+		
+		<div class="card">
+			<article class="filter-group">
+				<header class="card-header">
+					<a href="#" data-toggle="collapse" data-target="#collapse_1" aria-expanded="true" class="">
+						<i class="icon-control fa fa-chevron-down"></i>
+						<h6 class="title">Categories</h6>
+					</a>
+				</header>
+				<div class="filter-content collapse show" id="collapse_1" >
+					<div class="card-body">
+						
+						<ul class="list-menu">
+							<li><a href="{% url 'home' %}"> All products </a></li>
+							{%for category in links%}
+						<li><a href="{{category.geturl}}">{{category.category_name}}  </a></li>
+							{% endfor %}
+						</ul>
+		
+					</div> <!-- card-body.// -->
+				</div>
+			</article> <!-- filter-group  .// -->
+
+			
+			
+			
+		</div> <!-- card.// -->
+		
+			</aside> <!-- col.// -->
+			<main class="col-md-9">
+				{% for i in allorders %}
+				<div class="card w-100 mb-3">
+					<div class="card-body ">
+					  
+						<div class="row ">
+							<div class="col-2 ml-5">
+							<img src="{{i.product.images.url}}" style="height: 80px;" alt="">
+							</div>
+							<div class="col-3 my-auto">
+								<p class="card-text " style="font-weight: 900;">{{i.product.product_name}}({{i.quantity}})</p>
+							</div>
+							<div class="col-1 my-auto">
+								
+							</div>
+							<div class="col-3 my-auto">
+								<p class="card-text " style="font-weight: 500;">₹ {{i.product.price}} </p>
+							</div>
+							<div class="col-2 my-auto">
+								{%if i.status == 'Delivered' %}
+								<p class="card-text " style="font-weight: 500;">&#128994;{{i.status}}</p>
+								{%else%}
+								<p class="card-text " style="font-weight: 500;">&#128992;{{i.status}}</p>
+								{% endif %}
+							</div>
+					  	
+					  	
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+
+			</main> 
+</div>	
+</div>
+</section>
+
+{% endblock %}

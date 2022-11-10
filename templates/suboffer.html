@@ -1,0 +1,14 @@
+<select onchange="getsubcatname()" id="select2" name="item2" class="form-select mb-3" >
+    <option selected="True" >Select Item</option>
+    {% for i in subcat %}
+    {% if x == "subcategory" %}
+    <option  value={{i.slug}}>{{i.subcategory_name}}</option>
+    {% elif x == "category" %}
+    <option  value={{i.slug}}>{{i.category_name}}</option>
+    {%else%}
+    <option  value={{i.slug}}>{{i.product_name}}</option>
+    {%endif%}
+    
+<!-- <option  value={{subcategory.category_name.id}}>{{subcategory.subcategory_name}}</option>  -->
+    {% endfor %}
+</select>

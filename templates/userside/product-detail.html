@@ -48,8 +48,15 @@
 
 <h2 name="productname" class="title">{{listofproducts.product_name}}</h2>
 
-<div class="mb-3"> 
-	<var class="price h4">₹{{listofproducts.price}}</var> 
+<div class="mb-3">
+	{% if listofproducts.sellingprice == 0 or listofproducts.sellingprice == listofproducts.price %}
+	<var class="price h4">₹ {{listofproducts.price}}</var>
+	
+	{% else %}
+	<var class="price h4">₹ {{listofproducts.sellingprice}}</var>
+	<var class="price h6 text-danger" >&nbsp;<s> ₹ {{listofproducts.price}}</s> </var>
+	{% endif %}
+	
 </div> 
 <br>
 <hr>
@@ -57,33 +64,17 @@
 <p>{{listofproducts.desciption}}</p>
 
 <hr>
-	{% comment %} <div class="row">
-		<div class="item-option-select">
-			<h6>Choose Color</h6>
-			<div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
-			  <label class="btn btn-light">
-			    <input type="radio" name="radio_color"> Silver
-			  </label>
-			  <label class="btn btn-light">
-			    <input type="radio" name="radio_color" > Gray
-			  </label>
-			  <label class="btn btn-light active">
-			    <input type="radio" name="radio_color checked"> Gold
-			  </label>
-			  <label class="btn btn-light">
-			    <input type="radio" name="radio_color"> Black
-			  </label>
-			</div> 
-		</div>
-	</div> <!-- row.// --> {% endcomment %}
+
 	
 	
 	{% if listofproducts.stock > 0 %}
 		{% if addedtocart is not None %}
 		<a href="{% url 'cart' %}" type="submit" class="btn  btn-success"> <span class="text">Added to cart</span> <i class="fas fa-shopping-cart"></i>  </a>
 		{% else %}
-		<a href="{% url 'addcart' pid=listofproducts.id %}" type="submit" class="btn  btn-primary"> <span class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i>  </a>
+		<a href="{% url 'addcart' pid=listofproducts.id %}" id="addcart" onclick="addclicked()" type="submit" class="btn  btn-primary"> <span id="addcartspan" class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i>  </a>
+		
 		{% endif %}
+
 	</form>
 	
 	{% else %}
@@ -106,6 +97,10 @@
 		function zooming(id)
 		{
         	$(id).imagezoomsl();
+		}
+		function addclicked(){
+			
+
 		}
 		
     </script>

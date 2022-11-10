@@ -1,6 +1,8 @@
+import code
 from datetime import date
 from itertools import product
 from telnetlib import STATUS
+from unicodedata import category
 from django.db import models
 
 # Create your models here.
@@ -9,6 +11,7 @@ from email.policy import default
 
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser,BaseUserManager
+from category.models import Category, Subcategory
 
 from store.models import Products
 # Create your models here.
@@ -29,6 +32,7 @@ class MyAccountManager(BaseUserManager):
         )
         user.set_password(password)
         user.save(using=self._db)
+        
         return user
 
     def create_superuser(self,first_name,last_name,email,phone_number,username,password):
@@ -81,6 +85,10 @@ class Address(models.Model):
     housename   =models.CharField(max_length=200)
     pincode     =models.IntegerField()
 
+    def fulladd(self):
+        fulladd=self.housename+","+self.street
+        return fulladd
+
 class Orders(models.Model):
     quantity    =models.IntegerField()
     date        =models.DateTimeField(auto_now_add=True)
@@ -88,4 +96,17 @@ class Orders(models.Model):
     user        =models.ForeignKey(Accounts,on_delete=models.CASCADE)
     product     =models.ForeignKey(Products,on_delete=models.CASCADE)
     Address     =models.ForeignKey(Address,on_delete=models.CASCADE)
+    price       =models.IntegerField(default=0)
 
+    def total(self):        
+        x=int(self.price)*int(self.quantity)       
+        return x
+
+class Referrel(models.Model):
+    code    =   models.CharField(max_length=200)
+    user    =   models.ForeignKey(Accounts,on_delete=models.CASCADE)
+    referredto=models.CharField(max_length=200,default=0)
+
+class Wallet(models.Model):
+    user    = models.ForeignKey(Accounts,on_delete=models.CASCADE)
+    amount  = models.IntegerField(default=0)

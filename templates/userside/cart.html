@@ -3,6 +3,14 @@
 {% load static %}
 {% block content%}
 
+<style>
+	input::placeholder {
+		font-weight: 300;
+		font-size: small;
+		opacity: .5;
+		color: #333333;
+	}
+</style>
 <section class="section-content padding-y bg">
 <div class="container">
 
@@ -41,14 +49,14 @@
 								
 									{% csrf_token %}
 									<!-- <button class="btn btn-light" type="submit" > <i class="fa fa-minus"></i> </button> -->
-									<button onclick="updatequantity(-1,'quantityvalue{{forloop.counter}}','{{cart.product_id.id}}','{{cart.product_id.price}}','priceincrements{{forloop.counter}}')" class="btn btn-light " type="submit" > <i class="fa fa-minus increment-btn"></i> </button>
+									<button onclick="updatequantity(-1,'quantityvalue{{forloop.counter}}','{{cart.product_id.id}}','{{cart.product_id.price}}','{{cart.product_id.sellingprice}}','priceincrements{{forloop.counter}}')" class="btn btn-light " type="submit" > <i class="fa fa-minus increment-btn"></i> </button>
 								
 							</div>
 							<input type="text" id="quantityvalue{{forloop.counter}}" class="form-control " value="{{cart.totalquantity}}">
 							<div class="input-group-append">
 							<input type="hidden" class="prod_id" value="{{cart.product_id.id}}">
 									{% csrf_token %}
-									<button onclick="updatequantity(1,'quantityvalue{{forloop.counter}}','{{cart.product_id.id}}','{{cart.product_id.price}}','priceincrements{{forloop.counter}}')" class="btn btn-light " type="submit" id="button_minus"> <i class="fa fa-plus increment-btn"></i> </button>
+									<button onclick="updatequantity(1,'quantityvalue{{forloop.counter}}','{{cart.product_id.id}}','{{cart.product_id.price}}','{{cart.product_id.sellingprice}}','priceincrements{{forloop.counter}}')" class="btn btn-light " type="submit" id="button_minus"> <i class="fa fa-plus increment-btn"></i> </button>
 								
 							</div>
 						</div> <!-- input-group.// -->
@@ -56,8 +64,13 @@
 	</td>
 	<td> 
 		<div class="price-wrap"> 
-			<var class="price" id="priceincrements{{forloop.counter}}">₹{{cart.gettotprice}} </var> 
+			
+			<var class="price" id="priceincrements{{forloop.counter}}">₹{{cart.gettotprice}} </var>
+			{% if cart.product_id.sellingprice == 0 or cart.product_id.sellingprice == cart.product_id.price %} 
 			<small class="text-muted"> ₹{{cart.product_id.price}}  each </small> 
+			{% else %}
+			<small class="text-muted"> ₹{{cart.product_id.sellingprice}}  each </small> 
+			{% endif %}
 		</div> <!-- price-wrap .// -->
 	</td>
 	<td class="text-right"> 
@@ -72,51 +85,74 @@
 </div> <!-- card.// -->
 
 	</aside> <!-- col.// -->
+
+	
+
+
 	<aside class="col-lg-3">
+				<!-- ////////////////// lg-3 for offer  begin ////////////////////// -->
+
 
 		<div class="card">
-		<div class="card-body">
-			<dl class="dlist-align">
-			  <dt>Total price:</dt>
-			  <dd  class="text-right">₹</dd>
-			  <dd class="text-right" id="ultimatetotal" style="display:inline-block">{{totalamount2}}</dd>
-			</dl>
-			<dl class="dlist-align">
-			  <dt>Tax:</dt>
-			  <dd  class="text-right">₹</dd>
-			  <dd class="text-right" id="taxx" style="display:inline-block"> {{tax}}</dd>
-			</dl>
-			<dl class="dlist-align">
-			  <dt>Total:</dt>
-			  <dd  class="text-right">₹</dd>
-			  <dd class="text-right text-dark b " id="finaltotal" style="display:inline-block"><strong>{{finalamount}}</strong></dd>
-			</dl>
-			<hr>
-			<p class="text-center mb-3">
-				<img src="{% static 'assets/images/misc/payments.png' %}" height="26">
-			</p>
-			<a href="{% url 'checkout' %}" class="btn btn-primary btn-block"> Checkout </a>
-			<a href="{% url 'home' %}" class="btn btn-light btn-block">Continue Shopping</a>
-		</div> <!-- card-body.// -->
-		</div> <!-- card.// -->
-
-</aside> <!-- col.// -->
+			<div class="card-body">
+				<dl class="dlist-align">
+				  <dt>Price:</dt>
+				  <dd  class="text-right">₹</dd>
+				  <dd class="text-right" id="ultimatetotal" style="display:inline-block">{{totalamount2}}</dd>
+				</dl>
+				
+				<dl class="dlist-align">
+				  <dt>Tax:</dt>
+				  <dd  class="text-right">₹</dd>
+				  <dd class="text-right" id="taxx" style="display:inline-block"> {{tax}}</dd>
+				</dl>
+				
+				<dl class="dlist-align">
+				  <dt>Total:</dt>
+				  <dd  class="text-right">₹</dd>
+				  <dd class="text-right text-dark b " id="finaltotal" style="display:inline-block"><strong>{{carttot}}</strong></dd>
+				</dl>
+				<hr>
+				<p class="text-center mb-3">
+					<img src="{% static 'assets/images/misc/payments.png' %}" height="26">
+				</p>
+				<a href="{% url 'checkout' %}" class="btn btn-primary btn-block"> Checkout </a>
+				<a href="{% url 'home' %}" class="btn btn-light btn-block">Continue Shopping</a>
+			</div> <!-- card-body.// -->
+	
+			
+			</div> <!-- card.// -->
+</aside>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+ <!-- col.// -->
 <script>
-	function updatequantity(a,totquant,pid,price,priceincrement){
+
+	
+
+
+
+	function updatequantity(a,totquant,pid,price,sellingprice,priceincrement){
 		quantvalue=totquant
 		totquantity=parseInt(document.getElementById(totquant).value);
 		ultimatetotal=parseInt(document.getElementById('ultimatetotal').innerHTML);
 		
+		if (sellingprice==0 || sellingprice==price){
 		nowprice=totquantity*price
+		}
+
+		else{
+			nowprice=totquantity*sellingprice
+			price=sellingprice
+		}
 		
 		price=parseInt(price)
 		add=parseInt(a);
 		cartcount=parseInt(document.getElementById('cartcount').innerHTML)
-		console.log("ultimatetotal "+cartcount)
-		console.log(a)
+		
 		if(a==1){
 			totprice=nowprice+price
 			ultimatetotal=ultimatetotal+price
+
 			cartcount=cartcount+1
 		}
 		else{

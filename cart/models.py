@@ -10,4 +10,8 @@ class Cart(models.Model):
     product_id=models.ForeignKey(Products,on_delete=models.CASCADE)
 
     def gettotprice(self):
-        return self.product_id.price*self.totalquantity 
+        if self.product_id.sellingprice==0 or self.product_id.sellingprice==self.product_id.price:
+            return self.product_id.price*self.totalquantity
+
+        else:
+            return self.product_id.sellingprice*self.totalquantity 

@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Ekart admin</title>
+    <title>GadKart admin</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -54,22 +54,17 @@
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
+                    <a href="{% url 'dashboard' %}" class="nav-item nav-link active"><i class="fa fa-chart-bar me-2"></i>Dashboard</a>
+
                     <a href="{% url 'adminhome' %}" class="nav-item nav-link "><i class="fa fa-user-alt me-2"></i>Users</a>
                     <a href="{% url 'adminproduct' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Product</a>
                     <a href="{% url 'categories' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Category</a>
-                    <a href="{% url 'subcategories' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Subcategory</a>
-                   
+                    <a href="{% url 'subcategories' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Subcategory</a>                    
                     <a href="{% url 'orderdetails' %}" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Order Details</a>
-                    <a href="{% url 'dashboard' %}" class="nav-item nav-link active "><i class="fa fa-chart-bar me-2"></i>Dashboard</a>
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>Pages</a>
-                        <div class="dropdown-menu bg-transparent border-0">
-                            <a href="signin.html" class="dropdown-item">Sign In</a>
-                            <a href="signup.html" class="dropdown-item">Sign Up</a>
-                            <a href="404.html" class="dropdown-item">404 Error</a>
-                            <a href="blank.html" class="dropdown-item">Blank Page</a>
-                        </div>
-                    </div>
+                    <a href="{% url 'salesReport' %}" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Sales Report</a>
+                    <a href="{% url 'adminoffers' %}" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Coupons</a>
+                    <a href="{% url 'adminoffersReal' %}" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Offers</a>                    
+                   
                 </div>
             </nav>
         </div>
@@ -90,45 +85,7 @@
                     <input class="form-control bg-dark border-0" type="search" placeholder="Search">
                 </form>
                 <div class="navbar-nav align-items-center ms-auto">
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <i class="fa fa-envelope me-lg-2"></i>
-                            <span class="d-none d-lg-inline-flex">Message</span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" class="dropdown-item">
-                                <div class="d-flex align-items-center">
-                                    <img class="rounded-circle" src="{% static 'assets/admins/img/user.jpg' %}" alt="" style="width: 40px; height: 40px;">
-                                    <div class="ms-2">
-                                        <h6 class="fw-normal mb-0">Jhon send you a message</h6>
-                                        <small>15 minutes ago</small>
-                                    </div>
-                                </div>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <div class="d-flex align-items-center">
-                                    <img class="rounded-circle" src="{% static 'assets/admins/img/user.jpg' %}" alt="" style="width: 40px; height: 40px;">
-                                    <div class="ms-2">
-                                        <h6 class="fw-normal mb-0">Jhon send you a message</h6>
-                                        <small>15 minutes ago</small>
-                                    </div>
-                                </div>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <div class="d-flex align-items-center">
-                                    <img class="rounded-circle" src="{% static 'assets/admins/img/user.jpg ' %}" alt="" style="width: 40px; height: 40px;">
-                                    <div class="ms-2">
-                                        <h6 class="fw-normal mb-0">Jhon send you a message</h6>
-                                        <small>15 minutes ago</small>
-                                    </div>
-                                </div>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item text-center">See all message</a>
-                        </div>
-                    </div>
+        
                     
                     <div class="nav-item dropdown">
                         <a href="{% url 'logout' %}" class="nav-link " >
@@ -193,7 +150,8 @@
                         <div class="bg-secondary text-center rounded p-4">
                             <div class="d-flex align-items-center justify-content-between mb-4">
                                 <h6 class="mb-0">Revenue</h6>
-                                <a href="">Show All</a>
+                                <a  href="{% url 'revenuepdf' %}"><i class="bi bi-filetype-pdf"></i> PDF</a>
+                                <a  href="{% url 'downloadrevexcel' %}"><i class="bi bi-filetype-pdf"></i> EXCEL</a>
                             </div>
                             <canvas id="salse-revenue"></canvas>
                         </div>
@@ -204,20 +162,29 @@
                         <div class="bg-secondary text-center rounded p-4">
                             <div class="d-flex align-items-center justify-content-between mb-4">
                                 <h6 class="mb-0">Sales</h6>
-                                <a href="">Show All</a>
+                                <a  href="{% url 'salespdf' %}"><i class="bi bi-filetype-pdf"></i> PDF</a>
+                                <a  href="{% url 'salesexcel' %}"><i class="bi bi-filetype-pdf"></i> EXCEL</a>
                             </div>
                             <canvas id="salse-revenue1"></canvas>
                         </div>
                     </div>
                     <div class="col-sm-12 col-xl-6">
                         <div class="bg-secondary rounded h-100 p-4">
-                            <h6 class="mb-4">Monthly Revenue</h6>
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                            <h6 class="">Monthly Revenue</h6>
+                            <a  href=""><i class="bi bi-filetype-pdf"></i> PDF</a>
+                            <a  href=""><i class="bi bi-filetype-pdf"></i> EXCEL</a>
+                            </div>
                             <canvas id="bar-chart"></canvas>
                         </div>
                     </div>
                     <div class="col-sm-12 col-xl-6">
                         <div class="bg-secondary rounded h-100 p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-4">
                             <h6 class="mb-4">Annual Revenue</h6>
+                            <a  href=""><i class="bi bi-filetype-pdf"></i> PDF</a>
+                            <a  href=""><i class="bi bi-filetype-pdf"></i> EXCEL</a>
+                            </div>
                             <canvas id="bar-chart1"></canvas>
                         </div>
                     </div>
@@ -252,24 +219,7 @@
    
 
     // Single Bar Chart
-    var ctx4 = $("#bar-chart").get(0).getContext("2d");
-    var myChart4 = new Chart(ctx4, {
-        type: "bar",
-        data: {
-            labels: [7,8,9,{%for i in monthrev %} "{{i.date__month}}" {% endfor %} ],
-            datasets: [{
-                label: "Monthly Revenue",
-                backgroundColor: [
-                    "rgba(235, 22, 22, .7)",
-                    
-                ],
-                data: [0,0,0,{% for i in monthrev %} "{{i.tot}}", {% endfor %}]
-            }]
-        },
-        options: {
-            responsive: true
-        }
-    });
+   
 
 
 
@@ -325,6 +275,24 @@
             labels: [2019,2020,2021,{%for i in yearrev %} "{{i.date__year}}" {% endfor %} ],
             datasets: [{
                 label: "Annual Revenue",
+                backgroundColor: [
+                    "rgba(235, 22, 22, .7)",
+                    
+                ],
+                data: [0,0,0,{% for i in monthrev %} "{{i.tot}}", {% endfor %}]
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+    var ctx4 = $("#bar-chart").get(0).getContext("2d");
+    var myChart4 = new Chart(ctx4, {
+        type: "bar",
+        data: {
+            labels: [7,8,9,{%for i in monthrev %} "{{i.date__month}}", {% endfor %} ],
+            datasets: [{
+                label: "Monthly Revenue",
                 backgroundColor: [
                     "rgba(235, 22, 22, .7)",
                     

@@ -3,14 +3,9 @@
 {% load static %}
 {% block content%}
 
-
-
-
 </header> <!-- section-header.// -->
 <section class="section-content padding-y bg">
 <div class="container">
-
-
 
 <!-- ============================ COMPONENT 2 ================================= -->
 <div class="row">
@@ -50,7 +45,7 @@
 <article class="card mb-4" >
 <div class="card-body">
 	<h4 class="card-title mb-4">Add Delivery address</h4>
-	<form action="{% url 'myprofile' %}">
+	<form action="{% url 'myprofile' %}" method="POST">
 		{% csrf_token %} 
 		<div class="row">
 				
@@ -152,21 +147,65 @@
   
 		</main> <!-- col.// -->
 		<aside class="col-md-4">
+			<div class="card mb-3">
+				<div class="card-body">
+					<h5>Apply Coupon</h5>
+					<center>
+					<input class="w-100" type="text" placeholder="  Enter Coupon code" name="couponcode" id="couponco" style="border: 2px solid #F8F9FA;
+					border-radius: 4px;">
+					</center>
+		
+					<button  onclick="Verify()" href="" class="btn btn-primary btn-block mt-2"> Apply </button>
+					
+				</div> <!-- card-body.// -->
+		
+		
+				{% comment %}  {% endcomment %}
+		
+				
+		
+				{% comment %}  {% endcomment %}
+		
+		
+				<!-- ////////////////// lg-3 for offers  end ////////////////////// -->
+				</div> <!-- card.// -->
 			<div class="card">
 		<div class="card-body">
 			<dl class="dlist-align">
 				
-			  <dt>Total price:</dt>
+			  <dt>Price:</dt>
 			  <dd class="text-right">₹ {{totalamount2}}</dd>
 			</dl>
+			{% if totalamount2 != 0 %}
+			  <dl class="dlist-align">
+				
+				<dt>Coupon Offer</dt>
+				<dd class="text-right text-success" id="offers">- ₹{{offer}}</dd>
+			  </dl>
+			  {% endif %}		
+
+			  {% if amount != 0 %}	
+			  <dl class="dlist-align">
+				
+				<dt>Wallet amount:</dt>
+				<dd class="text-right text-success">- ₹ {{amount}}</dd>
+			  </dl>  
+			  {% endif %}
+
 			<dl class="dlist-align">
+				
 			  <dt>Tax:</dt>
 			  <dd class="text-right">₹ {{tax}}</dd>
 			</dl>
 			<dl class="dlist-align">
 			  <dt>Total:</dt>
+			  {% if totalamount2 != 0 %}
 			  <dd  class="text-right text-dark b"><strong id="finalamount">₹ {{finalamount}}</strong></dd>
 			  <input type="hidden" name="" id="xyz" value={{finalamount}}>
+			  {% else %}
+			  <dd  class="text-right text-dark b"><strong id="finalamount">₹ 0</strong></dd>
+			  <input type="hidden" name="" id="xyz" value={{finalamount}}>
+			  {%endif%}
 			</dl>
 			<hr>
 			<p class="text-center mb-3">
@@ -202,6 +241,7 @@
 						<script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
 						<!-- Set up a container element for the button -->
 						<div class="mx-auto" id="paypal-button-container"></div>
+
 						<script>
 							
 						paypal.Buttons({
@@ -210,7 +250,7 @@
 							return actions.order.create({
 								purchase_units: [{
 								amount: {
-									value: '1' // Can also reference a variable or function
+									value: {{finalamountinRs}} // Can also reference a variable or function
 								}
 								}]
 							});
@@ -274,13 +314,49 @@
 </section>
 <!-- ========================= SECTION CONTENT END// ========================= -->
 
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <!-- ========================= RAZORPAY ========================= -->
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
+	
+
+	function Verify(){
+		
+		code=document.getElementById('couponco').value
+		var token     = $('input[name=csrfmiddlewaretoken]').val();
+		$.ajax({
+			method:'POST',
+			url:"checkcoupon",
+			data:{
+				code:code,
+				csrfmiddlewaretoken:token
+			},
+			
+			success:function(response){
+				
+				if (response.status){
+					var totofferprice=parseInt(response.totoffer_price)
+					console.log(totofferprice)
+					swal('Congratulations!', 'You have earned a profit of '+totofferprice +' Rs','success');
+					document.getElementById('offers').innerHTML="₹ "+totofferprice
+					var finalvalue= parseInt(document.getElementById('xyz').value)
+					finalvalue=finalvalue-totofferprice
+					console.log(finalvalue)
+					document.getElementById('finalamount').innerHTML=finalvalue
+					console.log("here")
+					document.getElementById('xyz').value=finalamount
+					//window.location.reload()
+				}
+				else{
+					console.log("thettipoi")
+					swal("Oops", "Invalid coupon" , "error");
+				}
+			}
+		}) 
+	}
 
 	function placeorder(){
 		if (document.getElementById('paypalradio').checked==true)
@@ -300,54 +376,49 @@
 	}
 
 	c=document.getElementById('xyz').value
-	console.log(c)
+	console.log("c value")
 	c=c*100
 	
-var options = {
-    "key": "rzp_test_ju3EIJ0EQ97kW8", // Enter the Key ID generated from the Dashboard
-    "amount": c, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-    "currency": "INR",
-    "name": "Acme Corp",
-    "description": "Test Transaction",
-    "image": "https://example.com/your_logo",
-    
-    "handler": function (response){
-        //alert(response.razorpay_payment_id);
-       //alert(response.razorpay_order_id);
-        //alert(response.razorpay_signature)
-		orderconfirmed(document.getElementsByClassName('llll').value);
-    },
-    "prefill": {
-        "name": "{{request.user.username}}",
-        "email": "{{request.user.email}}",
-        "contact": "{{request.user.phone_number}}"
-    },
-    "notes": {
-        "address": "Razorpay Corporate Office"
-    },
-    "theme": {
-        "color": "#3399cc"
-    }
-};
+	var options = {
+		"key": "rzp_test_ju3EIJ0EQ97kW8", // Enter the Key ID generated from the Dashboard
+		"amount": c, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+		"currency": "INR",
+		"name": "Acme Corp",
+		"description": "Test Transaction",
+		"image": "https://example.com/your_logo",
+		
+		"handler": function (response){
+			
+			orderconfirmed(document.getElementsByClassName('llll').value);
+			
+		},
+		"prefill": {
+			"name": "{{request.user.username}}",
+			"email": "{{request.user.email}}",
+			"contact": "{{request.user.phone_number}}"
+		},
+		"notes": {
+			"address": "Razorpay Corporate Office"
+		},
+		"theme": {
+			"color": "#3399cc"
+		}
+	};
 
 
 
-var rzp1 = new Razorpay(options);
-var token     = $('input[name=csrfmiddlewaretoken]').val();
-rzp1.on('payment.failed', function (response){
-        alert(response.error.code);
-        alert(response.error.description);
-        alert(response.error.source);
-        alert(response.error.step);
-        alert(response.error.reason);
-        alert(response.error.metadata.order_id);
-        alert(response.error.metadata.payment_id);
-});
+	var rzp1 = new Razorpay(options);
+	var token     = $('input[name=csrfmiddlewaretoken]').val();
+	rzp1.on('payment.failed', function (response){
+		swal("Payment Failed", "Please try again to pay the order" , "error");
+	});
 
 
 document.getElementById('confirmbtn').onclick = function(e){
+
 	if (document.getElementById('razorpay').checked==true)
 	{
+		
     rzp1.open();
     e.preventDefault();
 	$.ajax({
@@ -359,7 +430,7 @@ document.getElementById('confirmbtn').onclick = function(e){
 		},
 		
 		success:function(response){
-			console.log("success")
+			
 			if (response.status){
 						
 			}
@@ -368,8 +439,7 @@ document.getElementById('confirmbtn').onclick = function(e){
 	}
 	else if(document.getElementById('cashondelvery').checked==true){
 			
-		console.log("yep")
-		console.log(housename)
+		
 		swal("Order status!", "Your product will be delivered within a week to "+ housename, "success").then(function(){
 			
 			var token      = $('input[name=csrfmiddlewaretoken]').val();
@@ -378,6 +448,7 @@ document.getElementById('confirmbtn').onclick = function(e){
 				url:"placedorder",
 
 				data:{
+					
 					addressx:housename,
 					csrfmiddlewaretoken: '{{ csrf_token }}',
 				},
@@ -385,10 +456,11 @@ document.getElementById('confirmbtn').onclick = function(e){
 				success:function(response){
 					
 					if (response.status){
-						console.log("succcerss")
+						
 						window.location.href="home"
 						document.getElementById('quantityvalue').value=totquantity
 					}
+				
 				}
 			})
 		});
@@ -408,10 +480,6 @@ document.getElementById('confirmbtn').onclick = function(e){
 
 <!-- ========================= RAZORPAY END ========================= -->
 
-
-
-
-
 <script>
 	var housename
 	function addresschecker(housenm){
@@ -421,12 +489,10 @@ document.getElementById('confirmbtn').onclick = function(e){
 	}
 
 	 function orderconfirmed(t){
-		console.log(t)
-		console.log("orderconfirmed worked")
+		
 		if(document.getElementById('cashondelvery').checked==true){
 			
-			console.log("yep")
-			console.log(housename)
+			
 			swal("Order status!", "Your product will be delivered within a week to "+ housename, "success").then(function(){
 				
 				var token      = $('input[name=csrfmiddlewaretoken]').val();
@@ -452,7 +518,7 @@ document.getElementById('confirmbtn').onclick = function(e){
 		}
 		else if(document.getElementById('razorpay').checked==true)
 		{ 
-			console.log("raz worked")
+			
 			rzp1.open();
 			//e.preventDefault();
 			$.ajax({
@@ -469,7 +535,7 @@ document.getElementById('confirmbtn').onclick = function(e){
 						
 						swal("Order status!", "Your product will be delivered within a week to "+ housename, "success").then(function(){
 				
-							var token      = $('input[name=csrfmiddlewaretoken]').val();
+							var token     = $('input[name=csrfmiddlewaretoken]').val();
 							$.ajax({
 								method:'POST',
 								url:"placedorder",
@@ -492,7 +558,7 @@ document.getElementById('confirmbtn').onclick = function(e){
 						
 					}
 					else{
-						console.log('fail')
+						
 					}
 				}
 			}) 
@@ -501,7 +567,7 @@ document.getElementById('confirmbtn').onclick = function(e){
 
 
 		else{
-			console.log("sssssss")
+			
 			swal({
 				title: "Payment Method?",
 				text: "Please select a payment option",

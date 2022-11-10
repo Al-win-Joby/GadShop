@@ -3,7 +3,8 @@ from . import views
 from django.urls import path
 
 urlpatterns = [
-     path('',views.landingpage,name="landingpage"),
+    path('',views.landingpage,name="landingpage"),
+    path('searchG',views.searchG,name="searchG"),
     path('login', views.loginn,name="login"),
     path('signup',views.signup,name="signup"),
     path('signedup',views.signedup,name="signedup"),
@@ -20,6 +21,7 @@ urlpatterns = [
     path("createadminuser",views.createadminuser,name="createadminuser"),
     path('addadminuser',views.addadminuser,name="addadminuser"),
     path('adminhome',views.adminhome,name="adminhome"),
+    
     path('orderdetails',views.orderdetails,name="orderdetails"),
     
     path('edit/<int:pk>',views.edit1,name='edit'),

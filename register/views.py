@@ -6,13 +6,15 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import login,logout,authenticate
 from django.contrib import messages
 from django.http import JsonResponse
-from account.models import Accounts, Orders
+from account.models import Accounts, Orders ,Referrel ,Wallet
+from django.urls import reverse
 import os
+from store import views as pp
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse
 from twilio.rest import Client
 
-from store.models import Products
+from store.models import Products, RealOffers
 # Create your views here.
 def loginn(request):
     if request.user.is_authenticated:
@@ -27,11 +29,12 @@ global rotp
 global user 
 def signedup(request):
     if request.method=='POST':
-        print("signedup")
+        #print("signedup")
         email=request.POST.get('email')
         first_name=request.POST.get('first_name')
         last_name=request.POST.get('last_name')
-        username=request.POST.get('username')
+        username=request.POST.get('first_name')
+        referrel= request.POST.get('referrel')
         password1=request.POST.get('password1')
         password2=request.POST.get('password2') 
         phone_number=request.POST.get('phone_number')
@@ -41,14 +44,20 @@ def signedup(request):
         if password1==password2: 
             if Accounts.objects.filter(username=username).exists():
                 messages.info(request,"User exist")
-                print("1st")
+                
                 return render(request,'signup.html')
             elif Accounts.objects.filter(email=email).exists():
                 messages.info(request,"Email exist")
-                print("2nd")
+                
                 return render(request,'signup.html')
             else:
-                
+                global referrelG 
+                referrelG=""
+                if referrel != "":
+                    if Referrel.objects.filter(code=referrel).exists():
+                        referrelG = referrel
+
+
                 global user 
                 
                 user={'first_name':first_name,'last_name':last_name,'phone_number':phone_number,'username':username,'email':email,'password':password1}
@@ -78,7 +87,7 @@ def verifynumber(request):
         user=Accounts.objects.get(phone_number=phone_number)
         print(user.username)
         if user is not None:
-            print("user indey")
+            
             rotp=getotp()
     else:
         messages.info(request,"Invalid number")
@@ -99,7 +108,7 @@ def verifylogin(request):
             #print("correct")
             global user
             if user is not None:
-                print(user)
+               
                 login(request,user)
                 return redirect('home')
             
@@ -122,10 +131,13 @@ def verify(request):
         
         if(number==str(rotp)):
             #print("correct")
+            global referrelG
             global user
             if user is not None:
-                print(user)
                 
+                
+                
+               
                 first_name=user["first_name"]
                 last_name=user["last_name"]
                 phone_number=user["phone_number"]
@@ -133,8 +145,33 @@ def verify(request):
                 email=user["email"]
                 password1=user["password"]
                 user= Accounts.objects.create_user(first_name=first_name,last_name=last_name,phone_number=phone_number,username=username,email=email,password=password1)
+                
+                wallet=Wallet()
+                wallet.user=user
+                wallet.save()
+
+                referrel=Referrel()
+                referrel.user=user
+                x=str(phone_number)
+                x=x[-4:]
+                
+                code = first_name+x
+                referrel.code=code
+                
+                referrel.save()
+
+
+                if referrelG != "":
+                    if Referrel.objects.filter(code=referrelG).exists():
+                        referlobj=Referrel.objects.get(code=referrelG)
+                        walletuser=referlobj.user
+                        #if Wallet.objects.filter(user=walletuser).exists():
+                        existingwallet=Wallet.objects.get(user=walletuser)
+                        existingwallet.amount=existingwallet.amount+50
+                        existingwallet.save()
+
                 return redirect('home')
-        
+         
         else:
             #print('thettipoi')
             messages.info(request,"Incorrect OTP")
@@ -152,7 +189,7 @@ def getotp():
     
 
     account_sid ='AC55ee27ce60089f5fb5d3dedca4e23b0f'
-    auth_token = '345cac7a6207b493e52e83670b9ad377'
+    auth_token = 'a22517b11e83bccf48e35a850b4ef158'
     client = Client(account_sid, auth_token)
 
     message = client.messages.create(
@@ -173,13 +210,20 @@ def loggedin(request):
         password=request.POST.get('password')
         user=authenticate(request,email=email,password=password)
         if user is None: 
-            print("no user")
+            
             messages.info(request,"Invalid credentials")
         elif user is not None:
-            print("user is present")
+            
             if user.is_staff==True:
                 login(request,user)
-                print("redirectedto gome")
+                
+                if 'productid' in request.session:
+                    prod=Products.objects.get(id=int(request.session['productid']))
+                    
+                    
+                    return pp.productshome(request,prod.category_name.slug,prod.slug)
+
+                    
                 return redirect('home')
             else:
                 messages.info(request,"Blocked by admin")
@@ -194,11 +238,26 @@ def landingpage(request):
     listofproduct= Products.objects.all()
     context={'listofproducts':listofproduct}
     return render(request,'index.html',context)
+from django.db.models import Q
+def searchG(request):
+    keyword= request.GET['search']
+    listofproduct=Products.objects.order_by('-created_date').filter(Q(desciption__icontains=keyword)|Q(product_name=keyword)|Q(subcategory_name__subcategory_name=keyword))
+
+    context={'listofproducts':listofproduct}
+    return render(request,'index.html',context)
     
 def statusupdate(request):
     orderid=request.POST['orderid']
     statusx=request.POST['statusvalue']
-    print(statusx)
+    
+    
+    order=Orders.objects.get(id=orderid)
+    if statusx== "Returned" :
+        prod=Products.objects.get(id=order.product.id)
+        prod.stock=prod.stock+1
+        prod.save()
+        
+
     order=Orders.objects.get(id=orderid)
     order.status=statusx
     order.save()
@@ -207,14 +266,26 @@ def statusupdate(request):
 @login_required(login_url='login')
 def home(request):
     if request.user.is_authenticated and request.user.is_staff == True: 
+
+        # if 'productid' in request.session:
+        #     x=request.session['productid']
+        #     print("home ethi  ",x)
+        #     prod=Products.objects.get(id=int(x))
+            
+
         listofproduct= Products.objects.all()
+        offer=RealOffers.objects.all()
         productcount=listofproduct.count #9
-        print("at")
-        paginator=Paginator(listofproduct,6)
+        
+        paginator=Paginator(listofproduct,9)
         page=request.GET.get('page')
         pagedproduct=paginator.get_page(page)
         
-        context={'listofproducts':pagedproduct,'productcount':productcount}
+        
+        for i in listofproduct:    
+            i.afteroffer
+            
+        context={'listofproducts':pagedproduct,'productcount':productcount,"inoffer":offer}
         return render(request,'userside/home.html',context)
     else:
         return redirect("landingpage")
@@ -228,7 +299,7 @@ def orderdetails(request):
 def adminlogin(request):
     if request.user.is_authenticated:
       if request.user.is_admin==True:
-        print("redirection didnt worked")
+        
         return redirect('adminhome')
       else:
         
@@ -244,13 +315,11 @@ def adminloggedin(request):
 
             if user.is_admin==True:
                 
-                
-                print("user is present")
                 login(request,user)
                 return redirect('adminhome')
         else:
             messages.info(request,"Invalid Credentials")
-            print("admin alla")
+            
     return render(request,'adminlogin.html') 
 
 def logout1(request):
@@ -288,7 +357,7 @@ def addadminuser(request):
         if password1==password2: 
             if Accounts.objects.filter(username=username).exists():
                 messages.info(request,"User exist")
-                print("user exitsst")
+               
                 name= request.user.username
                 return render(request,'createadmin.html',{'name':name})
 

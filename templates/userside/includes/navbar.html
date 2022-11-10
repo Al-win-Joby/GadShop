@@ -36,8 +36,10 @@
         <div class="container">
     <div class="row align-items-center">
         <div class="col-lg-2 col-md-3 col-6">
-            <a href="./" class="brand-wrap">
-                <img class="logo" src="{% static 'assets/images/logo.png' %}">
+            <a href="./" class="brand-wrap d-flex float-right">
+                {% comment %} <img class="logo" src="{% static 'assets/images/gadN22.png' %}"> {% endcomment %}
+                <img class="logo pt-1 pl-4" src="{% static 'assets/images/gadN221.png' %}">
+
             </a> <!-- brand-wrap.// -->
         </div>
         <div class="col-lg col-sm col-md col-6 flex-grow-0">
@@ -71,6 +73,7 @@
         <div class="col-lg-3 col-sm-6 col-8 order-2 order-lg-3">
             <div class="d-flex justify-content-end mb-3 mb-lg-0">
                 <div class="widget-header my-auto">
+                    {% if user.is_authenticated  %}
                     
                     <div class="category-wrap dropdown d-inline-block float-right">
                         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> 
@@ -79,11 +82,20 @@
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href=" {% url 'myprofile' %} ">Your Profile </a>
                             <a class="dropdown-item" href="{% url 'myorders' %}">Orders</a>
-                            <a class="dropdown-item" href="#">Wishlist </a>
+                            {% comment %} <a class="dropdown-item" href="#">Wishlist </a> {% endcomment %}
                             
                             <a class="dropdown-item" href="{% url 'logout' %}">Logout </a> 
                         </div>
                     </div>
+                    {%else%}
+                    <div class="widget-header">
+						<small class="title text-muted">Welcome guest!</small>
+						<div> 
+							<a href="{% url 'login' %}">Login</a> <span class="dark-transp"> | </span>
+							<a href="{% url 'signup' %}">Sign Up</a>
+						</div>
+					</div>
+                    {% endif %}
     
                 </div>
                 <div class="row ">

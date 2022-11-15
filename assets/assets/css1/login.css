@@ -1,0 +1,30 @@
+
+.divcolor{
+    
+    color: brown ;
+    background: rgb(238, 238, 238) !important;
+    border: 1px solid #6c6a6aa6;
+}
+.divtext{
+    color: #333333;
+    
+}
+.logintext{
+    color: #401BD6;
+}
+.inp{
+    width: 75px !important;
+    height: 75px !important;
+    font-size: 50px;
+}
+.hovers{
+    
+}
+.hovers:hover{
+    color: #401BD6 !important;
+}
+.categoryimage{
+    width: 50px;
+    height: 50px;
+    background-color: #401BD6;
+}

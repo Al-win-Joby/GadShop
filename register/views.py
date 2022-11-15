@@ -189,7 +189,7 @@ def getotp():
     
 
     account_sid ='AC55ee27ce60089f5fb5d3dedca4e23b0f'
-    auth_token = '910cee62b4852e22bc2bda28051be70a'
+    auth_token = '06f3dca6c18adcf6cf8543a937638bdc'
     client = Client(account_sid, auth_token)
 
     message = client.messages.create(
